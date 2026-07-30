@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Render the Markdown guides into static HTML for the Cloudflare Workers site.
 
-Source:  ../guides-content/*.md
+Source:  guides-src/*.md
 Output:  public/guides/index.html
          public/guides/<slug>/index.html
          public/sitemap.xml
@@ -28,7 +28,7 @@ except ImportError:
     sys.exit("markdown2 is required:  pip install markdown2")
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-SRC = os.path.join(HERE, "..", "guides-content")
+SRC = os.path.join(HERE, "guides-src")
 OUT = os.path.join(HERE, "public", "guides")
 SITEMAP = os.path.join(HERE, "public", "sitemap.xml")
 BASE_URL = "https://lentora.co.uk"

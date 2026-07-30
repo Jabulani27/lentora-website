@@ -15,13 +15,14 @@ public/            everything served (Cloudflare Workers Static Assets)
   guides/          generated — do not edit by hand
   sitemap.xml      generated
 worker/index.js    /api/contact endpoint; everything else falls through to assets
-build_guides.py    renders ../guides-content/*.md into public/guides/
+guides-src/         the 22 guides as Markdown — source of truth
+build_guides.py    renders guides-src/*.md into public/guides/
 wrangler.toml
 ```
 
 ## Guides
 
-Source of truth is `../guides-content/*.md` (outside this repo). Edit the Markdown,
+Source of truth is `guides-src/*.md`. Edit the Markdown,
 then rebuild:
 
 ```bash
