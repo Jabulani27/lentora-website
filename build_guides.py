@@ -43,7 +43,7 @@ CATEGORY_ORDER = [
     "Sectors",
 ]
 
-STATIC_PAGES = ["/", "/guides", "/privacy"]
+STATIC_PAGES = ["/", "/bid-writing-services", "/guides", "/privacy"]
 
 
 # ── source ────────────────────────────────────────────────────────────────────
@@ -137,6 +137,7 @@ def head(title, description, canonical, extra=""):
     <ul class="ls-nav-links">
       <li><a href="/#ls-how">How it works</a></li>
       <li><a href="/#ls-specialisms">Specialisms</a></li>
+      <li><a href="/bid-writing-services">Bid writing</a></li>
       <li><a href="/#ls-suppliers">For suppliers</a></li>
       <li><a href="/guides">Guides</a></li>
     </ul>
@@ -155,6 +156,7 @@ FOOTER = """
     </div>
     <div class="ls-footer-links">
       <a href="/#ls-how">How it works</a>
+      <a href="/bid-writing-services">Bid writing</a>
       <a href="/#ls-suppliers">For suppliers</a>
       <a href="/guides">Guides</a>
       <a href="/privacy">Privacy</a>
