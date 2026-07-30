@@ -46,6 +46,10 @@ export default {
       return json({ error: "Not found." }, 404);
     }
 
+    // Note: asset paths are served straight from the edge without invoking this
+    // Worker, so anything host- or header-based has to be done in config, not
+    // here. Preview-URL indexing is handled by workers_dev/preview_urls being
+    // off in wrangler.toml rather than by an X-Robots-Tag added at this point.
     return env.ASSETS.fetch(request);
   },
 };
