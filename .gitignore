@@ -1,4 +1,7 @@
+.dev.vars
 .DS_Store
-node_modules/
 .env
 *.log
+node_modules/
+.venv/
+.wrangler/

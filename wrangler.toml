@@ -1,6 +1,19 @@
 name = "lentora-website"
+main = "worker/index.js"
 compatibility_date = "2026-01-01"
 
+# Static site lives in ./public and is served by the assets binding.
+# The Worker only intercepts /api/* — everything else falls through to assets.
 [assets]
-directory = "."
+directory = "./public"
+binding = "ASSETS"
 not_found_handling = "404-page"
+# The indexed guide URLs have no trailing slash (/guides/<slug>), so serve them
+# there directly. The default would 307 to /guides/<slug>/ and move every
+# already-ranking URL behind a redirect.
+html_handling = "drop-trailing-slash"
+
+# Secrets (set with `npx wrangler secret put <NAME>`, never commit them):
+#   BREVO_API_KEY      — required, sends the contact-form email
+#   TURNSTILE_SECRET   — optional, enables bot verification when present
+#   CONTACT_TO         — optional, overrides the info@lentora.co.uk destination
