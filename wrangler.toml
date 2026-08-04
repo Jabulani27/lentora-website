@@ -22,3 +22,6 @@ html_handling = "drop-trailing-slash"
 #   BREVO_API_KEY      — required, sends the contact-form email
 #   TURNSTILE_SECRET   — optional, enables bot verification when present
 #   CONTACT_TO         — optional, overrides the info@lentora.co.uk destination
+#   ANTON_INGEST_KEY   — optional, mirrors enquiries into Anton's Enquiries tab
+# Lead recipients are NOT set here: `wrangler deploy` replaces bindings, so a
+# dashboard-set var would be dropped. See DEFAULT_ALSO in worker/index.js.

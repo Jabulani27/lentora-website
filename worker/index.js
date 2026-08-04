@@ -8,6 +8,9 @@
  *   BREVO_API_KEY      required — without it the endpoint returns 503
  *   TURNSTILE_SECRET   optional — bot verification is enforced only when set
  *   CONTACT_TO         optional — defaults to info@lentora.co.uk
+ *   CONTACT_ALSO       optional — extra lead recipients, comma-separated.
+ *                      Overrides DEFAULT_ALSO (both founders) entirely rather
+ *                      than adding to it, so set the full list when you use it.
  *   ANTON_INGEST_KEY   optional — when set, enquiries are also pushed to Anton
  *                      so they show up on /admin/enquiries. Must match Anton's
  *                      ENQUIRY_INGEST_KEY.
@@ -18,6 +21,13 @@
 
 const SENDER = { name: "Lentora website", email: "hello@lentora.co.uk" };
 const DEFAULT_TO = "info@lentora.co.uk";
+// Both founders, so a lead reaches each of them directly rather than one
+// depending on the other to forward it. These are @lentora.co.uk addresses
+// on purpose: each is an alias in KonsoleH pointing at a personal inbox, so a
+// change of personal address is an alias edit rather than a Worker redeploy.
+// Kept in code rather than a dashboard variable — `wrangler deploy` replaces
+// bindings, so a var set in the Cloudflare UI would be silently dropped.
+const DEFAULT_ALSO = "michael@lentora.co.uk,paul@lentora.co.uk";
 const ANTON_INGEST_URL = "https://anton.lentora.co.uk/api/enquiries";
 
 // Brand, kept in one place so the email matches lentora.co.uk and the signatures.
@@ -129,7 +139,7 @@ async function handleContact(request, env, ctx) {
 
   const sent = await sendEmail(env.BREVO_API_KEY, {
     sender: SENDER,
-    to: [{ email: env.CONTACT_TO || DEFAULT_TO }],
+    to: leadRecipients(env),
     replyTo: { email, name },
     subject: `🔔 New Lentora enquiry — ${name}${organisation ? ` · ${organisation}` : ""}`,
     htmlContent: leadEmailHtml({ name, email, message, roleLabel, rows }),
@@ -292,6 +302,23 @@ function leadEmailText({ name, email, message, rows }) {
     `Reply to this email to answer ${name} at ${email}.\n` +
     `See it in Anton: https://anton.lentora.co.uk/admin/enquiries\n`
   );
+}
+
+/**
+ * Everyone who should see a new lead. Both founders get it directly, so neither
+ * depends on the other forwarding it on. Deduplicated and validated so a stray
+ * comma or a repeated address in config can't produce a malformed Brevo payload.
+ */
+function leadRecipients(env) {
+  const primary = (env.CONTACT_TO || DEFAULT_TO).trim();
+  const also = (env.CONTACT_ALSO ?? DEFAULT_ALSO)
+    .split(",")
+    .map((a) => a.trim())
+    .filter((a) => a && isEmail(a));
+  const seen = new Set();
+  return [primary, ...also]
+    .filter((a) => a && isEmail(a) && !seen.has(a.toLowerCase()) && seen.add(a.toLowerCase()))
+    .map((a) => ({ email: a }));
 }
 
 /** Best-effort mirror of the enquiry into Anton's admin Enquiries tab. */
