@@ -240,6 +240,30 @@
             <li>IT consultancy</li>
           </ul>
         </div>
+
+        <!-- Spans both columns: a genuine third category, but deliberately not
+             given the same weight as the two we lead with. Added Aug 2026 after
+             the first two website enquiries came from a security firm and a
+             staffing agency — neither could see themselves anywhere on the page. -->
+        <div class="ls-spec-card ls-reveal ls-reveal-delay-2" style="grid-column:1/-1;">
+          <div class="ls-spec-eyebrow">Also welcome</div>
+          <h3>Specialist services</h3>
+          <p>
+            The thin prime model does not care what you deliver — it cares whether you are
+            genuinely specialist and whether the public sector buys it. A great deal of
+            public spending goes on operational services bought from SMEs, often through
+            buyers who would rather deal with one accountable prime than a dozen small
+            suppliers. If that describes you, we are interested.
+          </p>
+          <ul class="ls-tags">
+            <li>Security &amp; monitoring</li>
+            <li>Staffing &amp; recruitment</li>
+            <li>Facilities management</li>
+            <li>Cleaning &amp; grounds</li>
+            <li>Health &amp; social care</li>
+            <li>Professional services</li>
+          </ul>
+        </div>
       </div>
 
       <p class="ls-spec-footnote ls-reveal">
@@ -427,8 +451,61 @@
     </div>
   </section>
 
+  <!-- ── Guides ────────────────────────────────────────────────
+       Linked individually rather than only through the /guides hub. Every guide
+       used to sit two clicks from the root behind a single hub link, which is
+       both worse for a reader who lands here and worse for how search engines
+       weight them. ─────────────────────────────────────────────── -->
+  <section class="ls-section ls-section-alt" id="ls-guides">
+    <div class="ls-container">
+      <div class="ls-section-header ls-reveal">
+        <h2>How UK procurement actually works</h2>
+        <div class="ls-divider"></div>
+        <p>Written for suppliers rather than buyers, and free. If you would rather bid
+          yourself than have us do it, start here.</p>
+      </div>
+
+      <div class="ls-guides-grid ls-reveal">
+        <a class="ls-guide-card" href="/guides/how-to-win-government-contracts-small-business">
+          <span class="ls-guide-cat">Winning work</span>
+          <h3>How to Win Government Contracts as a Small Business</h3>
+          <p>Registering on the Central Digital Platform, finding the right opportunities, and the SME spend targets working in your favour.</p>
+        </a>
+        <a class="ls-guide-card" href="/guides/procurement-act-2023-explained">
+          <span class="ls-guide-cat">The rules</span>
+          <h3>The Procurement Act 2023, Explained</h3>
+          <p>What changed when the Act went live, and what it means in practice for a supplier bidding for public sector work.</p>
+        </a>
+        <a class="ls-guide-card" href="/guides/central-digital-platform">
+          <span class="ls-guide-cat">Getting started</span>
+          <h3>The Central Digital Platform</h3>
+          <p>The single supplier registration behind UK public procurement — what it replaces, and how to get registered.</p>
+        </a>
+        <a class="ls-guide-card" href="/guides/what-is-a-framework-agreement">
+          <span class="ls-guide-cat">Routes to market</span>
+          <h3>What Is a Framework Agreement?</h3>
+          <p>What frameworks are, how call-offs work, and how suppliers actually get appointed to one.</p>
+        </a>
+        <a class="ls-guide-card" href="/guides/how-to-write-a-tender-response">
+          <span class="ls-guide-cat">Writing the bid</span>
+          <h3>How to Write a Tender Response</h3>
+          <p>How evaluators read what you submit, and what separates a scoring answer from a merely competent one.</p>
+        </a>
+        <a class="ls-guide-card" href="/guides/where-to-find-uk-tenders">
+          <span class="ls-guide-cat">Finding work</span>
+          <h3>Where to Find UK Tenders</h3>
+          <p>Every portal worth watching across England, Scotland, Wales and Northern Ireland, and what each one actually carries.</p>
+        </a>
+      </div>
+
+      <p class="ls-cert-note ls-reveal">
+        <a href="/guides">All 22 guides →</a>
+      </p>
+    </div>
+  </section>
+
   <!-- ── Contact ───────────────────────────────────────────── -->
-  <section class="ls-section ls-section-alt" id="ls-contact">
+  <section class="ls-section" id="ls-contact">
     <div class="ls-container">
       <div class="ls-section-header ls-reveal">
         <h2>Talk to us</h2>
@@ -483,6 +560,15 @@
             <label for="ls-website">Website</label>
             <input type="text" id="ls-website" name="website" tabindex="-1" autocomplete="off">
           </div>
+
+          <!-- Where this enquiry came from. Filled in at submit time from the
+               referrer and URL that the browser already has — nothing is stored
+               on the visitor's device, so this needs no cookie consent. Without
+               it we cannot tell an organic lead from a direct one; the two
+               enquiries received in August 2026 have no source recorded at all. -->
+          <input type="hidden" name="src_referrer" id="ls-src-referrer">
+          <input type="hidden" name="src_page" id="ls-src-page">
+          <input type="hidden" name="src_utm" id="ls-src-utm">
 
           <div id="ls-turnstile"></div>
 
@@ -628,8 +714,27 @@ window.LENTORA_TURNSTILE_SITE_KEY = '0x4AAAAAADpIPRt1IHD5zwil';
     statusEl.className = 'ls-form-status is-' + kind;
   }
 
+  // Attribution, read straight off the browser at submit time. No cookie and no
+  // storage, so it sits outside the consent gate in assets/consent.js and works
+  // even for visitors who declined analytics.
+  //
+  // Known limit: for someone who lands on a guide and then clicks through to the
+  // form, document.referrer is the guide, not Google. That still answers the
+  // question we actually care about — which page fed the enquiry.
+  function fillAttribution() {
+    var params = new URLSearchParams(location.search);
+    var utm = ['utm_source', 'utm_medium', 'utm_campaign', 'gclid']
+      .map(function (k) { return params.get(k) ? k + '=' + params.get(k) : ''; })
+      .filter(Boolean)
+      .join('&');
+    document.getElementById('ls-src-referrer').value = document.referrer || '';
+    document.getElementById('ls-src-page').value = location.pathname + location.search;
+    document.getElementById('ls-src-utm').value = utm;
+  }
+
   form.addEventListener('submit', function (ev) {
     ev.preventDefault();
+    fillAttribution();
 
     var data = Object.fromEntries(new FormData(form).entries());
     if (!data.name || !data.email || data.email.indexOf('@') === -1) {

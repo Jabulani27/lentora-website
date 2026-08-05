@@ -48,7 +48,25 @@ const LIMITS = {
   role: 40,
   sector: 300,
   message: 5000,
+  src_referrer: 500,
+  src_page: 300,
+  src_utm: 300,
 };
+
+// Referrer hosts worth naming in the lead email. Anything else is reported as
+// its bare hostname, which is usually informative enough on its own.
+const KNOWN_SOURCES = [
+  [/(^|\.)google\./, "Google search"],
+  [/(^|\.)bing\./, "Bing search"],
+  [/duckduckgo\./, "DuckDuckGo"],
+  [/(^|\.)linkedin\./, "LinkedIn"],
+  [/(^|\.)chatgpt\.com|(^|\.)openai\./, "ChatGPT"],
+  [/(^|\.)perplexity\./, "Perplexity"],
+  [/(^|\.)claude\.ai/, "Claude"],
+  [/(^|\.)reddit\./, "Reddit"],
+  [/(^|\.)facebook\.|(^|\.)instagram\./, "Facebook/Instagram"],
+  [/(^|\.)x\.com|(^|\.)twitter\./, "X/Twitter"],
+];
 
 const ROLE_LABELS = {
   supplier: "Supplier or potential delivery partner",
@@ -69,6 +87,22 @@ export default {
 
     if (url.pathname.startsWith("/api/")) {
       return json({ error: "Not found." }, 404);
+    }
+
+    // The ~1,000 old tender-detail URLs. They were 301'd to the homepage, which
+    // Google reads as a soft 404 and re-crawls for months; 410 says "gone, stop
+    // asking" and drops them cleanly. They are never coming back — the public
+    // tender-search product was withdrawn in July 2026.
+    //
+    // NOTE: this is inert until the Cloudflare Single Redirect rule covering
+    // /bids/* is deleted. Redirect Rules run at the edge *before* Workers, so
+    // while that rule exists it wins and this branch never executes.
+    if (url.pathname.startsWith("/bids/")) {
+      return new Response(
+        "This tender listing no longer exists. Lentora is a thin prime " +
+          "contractor and bid writer: https://lentora.co.uk/\n",
+        { status: 410, headers: { "content-type": "text/plain; charset=utf-8" } }
+      );
     }
 
     // Note: asset paths are served straight from the edge without invoking this
@@ -100,6 +134,9 @@ async function handleContact(request, env, ctx) {
   const role = field("role");
   const sector = field("sector");
   const message = field("message");
+  const srcReferrer = field("src_referrer");
+  const srcPage = field("src_page");
+  const srcUtm = field("src_utm");
 
   if (!name || !isEmail(email)) {
     return json({ error: "A name and a valid email address are required." }, 400);
@@ -125,8 +162,11 @@ async function handleContact(request, env, ctx) {
   // second copy of the same lead.
   const extId = crypto.randomUUID();
 
+  const channel = describeSource(srcReferrer, srcUtm);
+
   const enquiry = {
     ext_id: extId, name, email, organisation, role, sector, message, country,
+    referrer: srcReferrer, landing_page: srcPage, utm: srcUtm, channel,
   };
 
   const rows = [
@@ -134,6 +174,8 @@ async function handleContact(request, env, ctx) {
     ["Organisation", organisation || "—"],
     ["They are", roleLabel],
     ["What they deliver", sector || "—"],
+    ["Came from", channel],
+    ["Page", srcPage || "—"],
     ["Received", `${submittedAt} · ${country}`],
   ];
 
@@ -333,6 +375,37 @@ async function pushToAnton(key, enquiry) {
     // Swallowed on purpose — the notification email already went out and is the
     // system of record. Never let this fail the visitor's submission.
   }
+}
+
+/**
+ * Turn a raw referrer into something readable in the lead email.
+ *
+ * A UTM tag wins outright — it is the only signal we set deliberately, so a
+ * tagged link is always what brought them in. Otherwise: an internal referrer
+ * names the page that fed the form, an external one names the source, and an
+ * empty referrer means direct, a bookmark, or a client that strips it (which
+ * includes most email apps and some AI assistants — do not read it as "typed
+ * the URL in").
+ */
+function describeSource(referrer, utm) {
+  if (utm) return `Campaign (${utm})`;
+  if (!referrer) return "Direct or unknown";
+
+  let host, path;
+  try {
+    const u = new URL(referrer);
+    host = u.hostname.replace(/^www\./, "");
+    path = u.pathname;
+  } catch {
+    return `Referred by ${referrer.slice(0, 80)}`;
+  }
+
+  if (host === "lentora.co.uk") return `Internal — from ${path}`;
+
+  for (const [pattern, label] of KNOWN_SOURCES) {
+    if (pattern.test(host)) return label;
+  }
+  return `Referred by ${host}`;
 }
 
 function formatWhen() {

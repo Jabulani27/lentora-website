@@ -1,14 +1,14 @@
 ---
-title: Dynamic Purchasing Systems (DPS) Explained
+title: What Is a Dynamic Market? (And What Happened to the DPS)
 slug: dynamic-purchasing-system
-description: What a Dynamic Purchasing System is, how the Procurement Act 2023 replaced DPS with dynamic markets, and how they differ from frameworks.
-date: 2026-06-17
+description: Dynamic markets explained — the Procurement Act 2023 route that stays open to new suppliers all year round, what replaced the Dynamic Purchasing System, and how both differ from a framework.
+date: 2026-08-05
 author: The Lentora team
 category: Routes to market
-keywords: dynamic purchasing system, dps, dynamic markets, dps vs framework
+keywords: dynamic market, what is a dynamic market, dynamic purchasing system, dps, dynamic markets, dps vs framework
 ---
 
-If you've come across the term "DPS" and want to know what it means — and whether it still exists under the new rules — this guide explains it. The short version: the idea lives on, but the name has changed.
+If you have come across either "dynamic market" or "DPS" and want to know what they mean — and which one still exists — this guide explains both. The short version: the idea lives on, the name has changed, and it is the one route to market you can join without waiting years for a window to open.
 
 ## At a glance
 
@@ -39,6 +39,21 @@ This is the comparison suppliers most want clarified. Both are ways for buyers t
 
 So if you missed the boat on a closed framework, a dynamic market is the route that still lets you in. (For more on frameworks, see [what is a framework agreement](/guides/what-is-a-framework-agreement) and [Crown Commercial Service and CCS frameworks](/guides/crown-commercial-service-ccs-frameworks).)
 
+## What it costs to be on one
+
+Worth knowing, because suppliers often assume a fee is being charged for membership. Under section 38 of the Act, a dynamic market may only charge a supplier that has actually **been awarded a contract** through it — not for joining — and any such fee must be a fixed percentage of the estimated value of that contract. Where a fee applies it has to be disclosed in the establishment documents.
+
+## The four notices to watch for
+
+Dynamic markets are announced through their own set of notices, and knowing which is which tells you whether you are looking at something you can still join:
+
+- **Dynamic market intention notice** — published before the market is established. Sets out what it covers, how it will operate, the conditions for membership, any fees, and who is allowed to buy through it. This is your early warning.
+- **Dynamic market establishment notice** — published once it exists, listing the suppliers admitted and the date it takes effect.
+- **Dynamic market modification notice** — records suppliers added or removed, and changes to the market.
+- **Dynamic market cessation notice** — announces that it is closing.
+
+Because the market stays open, you can apply for membership even after a tender notice has been published, provided the authority has enough time to consider your application before the deadline. That is a genuine difference from a framework, where a missed window is simply a missed window.
+
 ## What happens to existing DPS?
 
 DPS set up under the Public Contracts Regulations 2015 don't vanish overnight. The transitional rules let them **continue to run** for their period of validity. However, they can only be extended within the first 12 months after the Act came into force, and **cannot be extended beyond 23 February 2029**. After that, the dynamic-market model takes over fully.
@@ -57,7 +72,13 @@ The concept continues but under a new name: **dynamic markets**. Existing DPS es
 A dynamic market (the new DPS) stays open for suppliers to join at any time. A closed framework is a fixed list that newcomers can't join once it's live.
 
 ### What is a utilities dynamic market?
-A dynamic market established specifically for awarding utility contracts by utilities, with some procedural differences from a standard dynamic market.
+A dynamic market established specifically for awarding utility contracts by utilities, with some procedural differences from a standard dynamic market — including that tender notices go to members of the market rather than being published openly.
+
+### Can I be charged a fee to join a dynamic market?
+No. A fee can only be charged to a supplier that has been awarded a contract through the market, and it must be a fixed percentage of that contract's estimated value.
+
+### Can I join after the tender notice has gone out?
+Yes, provided the contracting authority has enough time to consider your application before the tender deadline. Dynamic markets have to accept applications continuously.
 
 ## Sources
 
